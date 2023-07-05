@@ -9,6 +9,10 @@ const ReservationModel = sequelize.define('Reservation', {
         seatId: {
             type: DataTypes.CHAR(36),
             allowNull: false
+        },
+        paid:{
+            type:DataTypes.BOOLEAN,
+            defaultValue: false,
         }
     },
     {
