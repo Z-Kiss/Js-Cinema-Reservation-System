@@ -42,5 +42,4 @@ module.exports = {
     reserveSeats,
     fillUpDatabaseWithSeats,
     freeUpSeats,
-    reserveSeats
 }
