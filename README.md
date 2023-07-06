@@ -57,7 +57,7 @@ Using websocket to see realtime seat status
     My first idea was useing a setTimeout but if the user closes the window it will not be executed.
 
     Conclusion:
-    I will user cron to schedule a task at the backend and after 2 minute it will delete reservations that are hase a specific email and are not paid then change back seat statuses
+    Because its js I can just use setTimeout on the backend '-.-
 
 - What libraries should I use:
 
