@@ -4,10 +4,12 @@ const compression = require('compression')
 const router = require('./controller/index')
 const http = require('http')
 const sequelize = require('./config/databaseConnection')
+const cookieParser = require("cookie-parser");
 const app = express();
 
 app.use(compression());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // // expand express.respond
 app.response.seatsId = [];
