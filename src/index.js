@@ -6,13 +6,17 @@ const http = require('http')
 const sequelize = require('./config/databaseConnection')
 const app = express();
 
-
 app.use(compression());
 app.use(bodyParser.json());
 
+// // expand express.respond
+app.response.seatsId = [];
+app.response.seats = [];
+app.response.email = "";
+
 const server = http.createServer(app);
 
-sequelize.sync({force: false}).then(() => {
+sequelize.sync({force: true}).then(() => {
     console.log('All models are synchronized successfully')
 }).catch(error => {
     console.error('Error occurred during model synchronization', error)
