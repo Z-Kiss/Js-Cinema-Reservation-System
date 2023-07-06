@@ -7,7 +7,7 @@ const ReservationModel = sequelize.define('Reservation', {
             allowNull: false,
         },
         seatId: {
-            type: DataTypes.CHAR(36),
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         paid:{
@@ -17,7 +17,7 @@ const ReservationModel = sequelize.define('Reservation', {
     },
     {
         tableName: 'Reservations',
-        updatedAt: false,
+        timestamps: false,
     });
 
 module.exports = ReservationModel

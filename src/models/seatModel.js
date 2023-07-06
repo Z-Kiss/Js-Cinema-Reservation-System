@@ -2,13 +2,6 @@ const {DataTypes} = require('sequelize')
 const sequelize = require('../config/databaseConnection.js')
 
 const SeatModel = sequelize.define('Seat', {
-        id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-            allowNull: false,
-            primaryKey: true,
-            unique: true
-        },
         row: {
             type: DataTypes.INTEGER,
             allowNull: false,
