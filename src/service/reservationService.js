@@ -8,11 +8,11 @@ const getAllReservation = async (req, res) =>{
 const makeReservation = async (req, res) =>{
     try{
         const seatsId = res.seatsId;
-        const email = res.email;
+        const name = res.name;
         for( const seatId of seatsId) {
-            await ReservationRepository.create({email: email, seatId:seatId})
+            await ReservationRepository.create({name: name, seatId:seatId});
         }
-        scheduleTaskReservationChecking(email, seatsId)
+        scheduleTaskReservationChecking(name, seatsId);
         return res.status(200).send("Seats reserved, you have 2 minute to pay");
     }catch(error){
         console.log(error)
@@ -20,18 +20,19 @@ const makeReservation = async (req, res) =>{
     }
 }
 
-const scheduleTaskReservationChecking = (email, seatsId) =>{
-   setTimeout(() => cleanUpReservations(email, seatsId),120000);
+const scheduleTaskReservationChecking = (name, seatsId) =>{
+    setTimeout(() => cleanUpReservations(name, seatsId),RESERVATION_TIME_LIMIT);
 }
 
-const cleanUpReservations = async (email, seatsId) =>{
-    await deleteNotPaidReservations(email);
+const cleanUpReservations = async (name, seatsId) =>{
+    await deleteNotPaidReservations(name);
     await freeUpSeats(seatsId);
     console.log('Reservation deleted');
 }
 
-const deleteNotPaidReservations = async (email) =>{
-    await ReservationRepository.destroy({where: {email: email, paid: false}})
+const deleteNotPaidReservations = async (name) =>{
+    await ReservationRepository.destroy({where: {name: name, paid: false}});
+    console.log('Not paid reservations deleted');
 }
 
 

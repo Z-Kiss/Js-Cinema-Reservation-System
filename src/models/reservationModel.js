@@ -2,7 +2,7 @@ const {DataTypes} = require('sequelize')
 const sequelize = require('../config/databaseConnection.js')
 
 const ReservationModel = sequelize.define('Reservation', {
-        email: {
+        name: {
             type: DataTypes.STRING,
             allowNull: false,
         },
