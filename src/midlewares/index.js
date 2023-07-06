@@ -18,7 +18,7 @@ const checkSeatStatus = async (req, res, next) =>{
         if(seat === null){
             return res.status(400).send('Wring Id provided');
         }
-        if(seat.status !== 'free'){
+        if(seat.status !== "szabad"){
             return res.status(400).send('Seat already reserved');
         }
         seats.push(seat);
@@ -29,20 +29,19 @@ const checkSeatStatus = async (req, res, next) =>{
     return next();
 }
 
-const checkEmail = async (req, res, next) =>{
-    const {email} = req.body;
-
-    if(!email){
-        return res.status(400).send('No email address provided');
+const checkAuthentication = async (req, res, next) =>{
+    const name = req.cookies['AUTH'];
+    if(!name){
+        return res.status(403).send('Need to login')
     }
-    res.email = email;
+    res.name = name;
     return next()
 }
 
-const checkNumberOfReservation = async(req, res, next) =>{
-    const email = res.email;
+const checkReservationLimit = async(req, res, next) =>{
+    const name = req.cookies['AUTH'];
     const {seatsId} = req.body;
-    const reservation = await ReservationModel.findAll({where: {email: email}})
+    const reservation = await ReservationModel.findAll({where: {name: name}})
 
     if((reservation.length + seatsId.length) > MAXIMUM_AMOUNT_OF_SEAT_THAT_USER_CAN_RESERVE){
         return res.status(400).send('You only can reserve ' + MAXIMUM_AMOUNT_OF_SEAT_THAT_USER_CAN_RESERVE + ' chars');
@@ -52,6 +51,7 @@ const checkNumberOfReservation = async(req, res, next) =>{
 
 module.exports ={
     checkSeatStatus,
-    checkEmail,
-    checkNumberOfReservation
+    checkAuthentication,
+    checkReservationLimit,
+    checkForEmailAddress
 }

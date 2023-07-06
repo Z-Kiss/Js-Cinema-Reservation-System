@@ -10,7 +10,7 @@ const reserveSeats = async (req, res, next) => {
         const seats = res.seats;
 
         for (const seat of seats) {
-            seat.status = "pending";
+            seat.status = "foglalt";
             await seat.save()
         }
         return next();
@@ -20,6 +20,7 @@ const reserveSeats = async (req, res, next) => {
     }
 }
 const fillUpDatabaseWithSeats = async (req, res) => {
+    await deleteAllSeats();
     const {amountOfRow, amountOfSeatInRow} = req.body;
     for (let i = 0; i < amountOfRow; i++) {
         for (let j = 0; j < amountOfSeatInRow; j++) {
@@ -29,12 +30,37 @@ const fillUpDatabaseWithSeats = async (req, res) => {
     return res.status(200).send(amountOfSeatInRow * amountOfRow + " seat created");
 }
 
-const freeUpSeats = async (seatsId) =>{
+const freeUpSeats = async (seatsId) => {
     for (const seatId of seatsId) {
         let seat = await SeatRepository.findByPk(seatId);
-        seat.status = 'free';
+        seat.status = 'szabad';
         await seat.save()
     }
+}
+
+const changeSeatsStatusToPaid = async (req, res, next) => {
+
+    const seatsId = res.seatsId;
+    for (const seatId of seatsId) {
+        let seat = await SeatRepository.findByPk(seatId);
+        seat.status = 'elkelt';
+        await seat.save();
+    }
+    return next();
+}
+
+const populateDatabase = async (req, res) => {
+    await deleteAllSeats();
+    await SeatRepository.create({row: 0, number: 0})
+    await SeatRepository.create({row: 1, number: 0})
+    return res.sendStatus(200);
+}
+
+const deleteAllSeats = async () =>{
+    await SeatRepository.destroy({
+        where: {},
+        truncate: true
+    })
 }
 
 module.exports = {
@@ -42,4 +68,7 @@ module.exports = {
     reserveSeats,
     fillUpDatabaseWithSeats,
     freeUpSeats,
+    changeSeatsStatusToPaid,
+    populateDatabase
+
 }

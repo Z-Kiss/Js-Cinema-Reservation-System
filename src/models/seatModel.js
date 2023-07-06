@@ -12,8 +12,8 @@ const SeatModel = sequelize.define('Seat', {
         },
         status: {
             type: DataTypes.ENUM,
-            values: ['free', 'pending', 'reserved'],
-            defaultValue: 'free',
+            values: ['szabad', 'foglalt', 'elkelt'],
+            defaultValue: 'szabad',
         },
     },
     {
