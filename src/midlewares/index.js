@@ -49,6 +49,15 @@ const checkReservationLimit = async(req, res, next) =>{
     return next()
 }
 
+const checkForEmailAddress = (req, res, next) =>{
+    const {email} = req.body;
+    if(!email){
+        return res.status(400).send('need to provide a email address as payment');
+    }
+    res.email = email;
+    return next();
+}
+
 module.exports ={
     checkSeatStatus,
     checkAuthentication,
