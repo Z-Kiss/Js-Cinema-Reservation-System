@@ -14,7 +14,8 @@ app.use(cookieParser());
 // // expand express.respond
 app.response.seatsId = [];
 app.response.seats = [];
-app.response.email = "";
+app.response.name = null;
+app.response.email = null;
 
 const server = http.createServer(app);
 
@@ -23,6 +24,7 @@ sequelize.sync({force: true}).then(() => {
 }).catch(error => {
     console.error('Error occurred during model synchronization', error)
 })
+
 
 
 server.listen(8080, () => {
