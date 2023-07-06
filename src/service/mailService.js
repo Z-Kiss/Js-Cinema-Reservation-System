@@ -8,18 +8,15 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-
-
 const sendMail = async (req, res) =>{
-
+    const email = res.email;
 
     const mailOptions = {
         from: 'petprojectemailaddress@gmail.com',
-        to: 'zotyaaa92@gmail.com',
+        to: email,
         subject: 'Homework email',
-        text: 'Seats are paid, and let me thank you for the opportunity'
+        text: 'Seats are paid'
     };
-
 
     await transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
@@ -33,5 +30,3 @@ const sendMail = async (req, res) =>{
 }
 
 module.exports = sendMail
-
-
