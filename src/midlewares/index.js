@@ -1,6 +1,6 @@
-const SeatModel = require('../models/seatModel')
-const ReservationModel = require('../models/reservationModel')
-const {MAXIMUM_AMOUNT_OF_SEAT_THAT_USER_CAN_RESERVE} = process.env
+const SeatModel = require('../models/seatModel');
+const ReservationModel = require('../models/reservationModel');
+const {MAXIMUM_AMOUNT_OF_SEAT_THAT_USER_CAN_RESERVE} = process.env;
 
 const checkSeatStatus = async (req, res, next) =>{
     const {seatsId} = req.body;
@@ -32,21 +32,21 @@ const checkSeatStatus = async (req, res, next) =>{
 const checkAuthentication = async (req, res, next) =>{
     const name = req.cookies['AUTH'];
     if(!name){
-        return res.status(403).send('Need to login')
+        return res.status(403).send('Need to login');
     }
     res.name = name;
-    return next()
+    return next();
 }
 
 const checkReservationLimit = async(req, res, next) =>{
     const name = req.cookies['AUTH'];
     const {seatsId} = req.body;
-    const reservation = await ReservationModel.findAll({where: {name: name}})
+    const reservation = await ReservationModel.findAll({where: {name: name}});
 
     if((reservation.length + seatsId.length) > MAXIMUM_AMOUNT_OF_SEAT_THAT_USER_CAN_RESERVE){
         return res.status(400).send('You only can reserve ' + MAXIMUM_AMOUNT_OF_SEAT_THAT_USER_CAN_RESERVE + ' chars');
     }
-    return next()
+    return next();
 }
 
 const checkForEmailAddress = (req, res, next) =>{

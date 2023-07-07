@@ -1,5 +1,5 @@
-const {DataTypes} = require('sequelize')
-const sequelize = require('../config/databaseConnection.js')
+const {DataTypes} = require('sequelize');
+const sequelize = require('../config/databaseConnection.js');
 
 const ReservationModel = sequelize.define('Reservation', {
         name: {
@@ -20,4 +20,4 @@ const ReservationModel = sequelize.define('Reservation', {
         timestamps: false,
     });
 
-module.exports = ReservationModel
+module.exports = ReservationModel;

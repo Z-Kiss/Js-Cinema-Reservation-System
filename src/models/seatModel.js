@@ -1,5 +1,5 @@
-const {DataTypes} = require('sequelize')
-const sequelize = require('../config/databaseConnection.js')
+const {DataTypes} = require('sequelize');
+const sequelize = require('../config/databaseConnection.js');
 
 const SeatModel = sequelize.define('Seat', {
         row: {
@@ -21,4 +21,4 @@ const SeatModel = sequelize.define('Seat', {
         timestamps: false
     });
 
-module.exports = SeatModel
+module.exports = SeatModel;

@@ -1,7 +1,7 @@
-const SeatRepository = require('../models/seatModel')
+const SeatRepository = require('../models/seatModel');
 
 const getAllSeat = async (req, res) => {
-    const seats = await SeatRepository.findAll()
+    const seats = await SeatRepository.findAll();
     return res.json(seats);
 }
 
@@ -11,7 +11,7 @@ const reserveSeats = async (req, res, next) => {
 
         for (const seat of seats) {
             seat.status = "foglalt";
-            await seat.save()
+            await seat.save();
         }
         return next();
     } catch (error) {
@@ -51,8 +51,8 @@ const changeSeatsStatusToPaid = async (req, res, next) => {
 
 const populateDatabase = async (req, res) => {
     await deleteAllSeats();
-    await SeatRepository.create({row: 0, number: 0})
-    await SeatRepository.create({row: 1, number: 0})
+    await SeatRepository.create({row: 0, number: 0});
+    await SeatRepository.create({row: 1, number: 0});
     return res.sendStatus(200);
 }
 
@@ -60,7 +60,7 @@ const deleteAllSeats = async () =>{
     await SeatRepository.destroy({
         where: {},
         truncate: true
-    })
+    });
 }
 
 module.exports = {

@@ -1,15 +1,15 @@
-const ReservationRepository = require('../models/reservationModel')
-const {freeUpSeats} = require('../service/seatService')
-const {RESERVATION_TIME_LIMIT} = process.env
+const ReservationRepository = require('../models/reservationModel');
+const {freeUpSeats} = require('../service/seatService');
+const {RESERVATION_TIME_LIMIT} = process.env;
 const getAllReservation = async (req, res) =>{
-    const reservations = await ReservationRepository.findAll()
-    return res.status(200).json(reservations)
+    const reservations = await ReservationRepository.findAll();
+    return res.status(200).json(reservations);
 }
 
 const payForReservation = async (req, res, next) =>{
 
     const name = res.name;
-    const reservations = await ReservationRepository.findAll({where: {name: name}})
+    const reservations = await ReservationRepository.findAll({where: {name: name}});
     if(!reservations){
         return res.status(400).send('You dont have reservations, try reserve again');
     }
