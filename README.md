@@ -39,6 +39,12 @@ For testing purpose I implemented 2 helper function for populating the database.
 One run after Login, but after there is an endpoint that you can call to add as much seat as you want for testing.
 (I explain the endpoints a little bit later)
 
+## Postman
+
+For testing the project with Postman use this link to access the Workplace that I used:
+https://app.getpostman.com/join-team?invite_code=24285dd7bdcf934e7ff0bde593bbb1f7&target_code=e5ace584b3b8a1e8b3a34aafb05769d8
+
+
 ## Features
 
  - Login/Logout. It's just a shell.
