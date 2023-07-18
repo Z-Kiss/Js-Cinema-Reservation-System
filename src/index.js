@@ -19,11 +19,11 @@ app.response.email = null;
 
 const server = http.createServer(app);
 
-sequelize.sync({force: true}).then(() => {
-    console.log('All models are synchronized successfully');
-}).catch(error => {
-    console.error('Error occurred during model synchronization', error);
-})
+// sequelize.sync({force: true}).then(() => {
+//     console.log('All models are synchronized successfully');
+// }).catch(error => {
+//     console.error('Error occurred during model synchronization', error);
+// })
 
 
 

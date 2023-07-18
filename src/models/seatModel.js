@@ -1,5 +1,5 @@
 const {DataTypes} = require('sequelize');
-const sequelize = require('../config/databaseConnection.js');
+const sequelize = require('../config/databaseConnection');
 
 const SeatModel = sequelize.define('Seat', {
         row: {
