@@ -1,5 +1,5 @@
 const {makeReservation, payForReservation} = require('../service/reservationService')
-const {checkSeatStatus, checkAuthentication, checkReservationLimit, checkForEmailAddress} = require('../midlewares/index')
+const {validateSeatsId} = require('../midlewares/index')
 const {reserveSeats, changeSeatsStatusToPaid} = require('../service/seatService')
 const sendMail = require('../service/mailService')
 const reservationController = (router) =>{
