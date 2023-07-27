@@ -12,9 +12,27 @@ const validateSeatsId = (req, res, next) => {
     res.seatsId = seatsId;
     return next();
 }
+const isAbleToReserve = (req, res, next) => {
+    const cookie = req.cookie['RESERVATION']
+    if (cookie) {
+        return res.status(400).send('You already have a unpaid reservation')
+    }
+    return next();
+}
 
+const isAbleToPay = (req, res, next) => {
+    const cookie = req.cookie['RESERVATION']
+    if (!cookie) {
+        return res.status(400).send("You don't have reservation to pay")
+    }
+    res.reservationId = cookie
+    return next();
+}
 
 
 module.exports = {
-    validateSeatsId
+    validateSeatsId,
+    isAbleToReserve,
+    isAbleToPay,
+
 }

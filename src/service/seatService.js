@@ -16,16 +16,6 @@ const fillUpDatabaseWithSeats = async (req, res) => {
     return res.status(200).send(amountOfSeatInRow * amountOfRow + " seat created");
 }
 
-const changeSeatsStatusToPaid = async (req, res, next) => {
-
-    const seatsId = res.seatsId;
-    for (const seatId of seatsId) {
-        let seat = await SeatRepository.findByPk(seatId);
-        seat.status = 'elkelt';
-        await seat.save();
-    }
-    return next();
-}
 
 const populateDatabase = async (req, res) => {
     await deleteAllSeats();
@@ -44,8 +34,6 @@ const deleteAllSeats = async () =>{
 module.exports = {
     getAllSeat,
     fillUpDatabaseWithSeats,
-    freeUpSeats,
-    changeSeatsStatusToPaid,
     populateDatabase
 
 }

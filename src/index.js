@@ -5,6 +5,7 @@ const router = require('./controller/index')
 const http = require('http')
 const sequelize = require('./config/databaseConnection')
 const cookieParser = require("cookie-parser");
+const {populateDatabase} = require("~/src/service/seatService");
 const app = express();
 
 app.use(compression());
@@ -13,9 +14,7 @@ app.use(cookieParser());
 
 // // expand express.respond
 app.response.seatsId = [];
-app.response.seats = [];
-app.response.name = null;
-app.response.email = null;
+app.response.reservationId = null;
 
 const server = http.createServer(app);
 
@@ -31,4 +30,4 @@ server.listen(8080, () => {
     console.log('Server running on http://localhost:8080')
 })
 
-app.use("/", router());
+app.use("/",  router());
