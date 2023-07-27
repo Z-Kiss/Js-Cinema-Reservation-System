@@ -5,20 +5,6 @@ const getAllSeat = async (req, res) => {
     return res.json(seats);
 }
 
-const reserveSeats = async (req, res, next) => {
-    try {
-        const seats = res.seats;
-
-        for (const seat of seats) {
-            seat.status = "foglalt";
-            await seat.save()
-        }
-        return next();
-    } catch (error) {
-        console.log(error);
-        return res.sendStatus(500);
-    }
-}
 const fillUpDatabaseWithSeats = async (req, res) => {
     await deleteAllSeats();
     const {amountOfRow, amountOfSeatInRow} = req.body;
@@ -28,14 +14,6 @@ const fillUpDatabaseWithSeats = async (req, res) => {
         }
     }
     return res.status(200).send(amountOfSeatInRow * amountOfRow + " seat created");
-}
-
-const freeUpSeats = async (seatsId) => {
-    for (const seatId of seatsId) {
-        let seat = await SeatRepository.findByPk(seatId);
-        seat.status = 'szabad';
-        await seat.save()
-    }
 }
 
 const changeSeatsStatusToPaid = async (req, res, next) => {
@@ -65,7 +43,6 @@ const deleteAllSeats = async () =>{
 
 module.exports = {
     getAllSeat,
-    reserveSeats,
     fillUpDatabaseWithSeats,
     freeUpSeats,
     changeSeatsStatusToPaid,
