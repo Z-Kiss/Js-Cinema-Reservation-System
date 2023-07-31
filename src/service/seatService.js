@@ -1,5 +1,4 @@
 const SeatRepository = require('../models/seatModel')
-
 const getAllSeat = async (req, res) => {
     const seats = await SeatRepository.findAll()
     return res.json(seats);
@@ -17,13 +16,6 @@ const fillUpDatabaseWithSeats = async (req, res) => {
 }
 
 
-const populateDatabase = async (req, res) => {
-    await deleteAllSeats();
-    await SeatRepository.create({row: 0, number: 0})
-    await SeatRepository.create({row: 1, number: 0})
-    return res.sendStatus(200);
-}
-
 const deleteAllSeats = async () =>{
     await SeatRepository.destroy({
         where: {},
@@ -34,6 +26,6 @@ const deleteAllSeats = async () =>{
 module.exports = {
     getAllSeat,
     fillUpDatabaseWithSeats,
-    populateDatabase
+
 
 }

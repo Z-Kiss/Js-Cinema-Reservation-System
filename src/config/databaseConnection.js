@@ -2,7 +2,7 @@ const {Sequelize} = require('sequelize');
 
 require('dotenv').config();
 
-const {MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_DATABASE, MYSQL_HOST} = process.env
+const {MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_DATABASE, MYSQL_HOST} = process.env;
 
 const sequelize = new Sequelize( {
     username: MYSQL_USERNAME,
@@ -14,10 +14,10 @@ const sequelize = new Sequelize( {
 });
 
 sequelize.authenticate().then(() => {
-    console.log("Connection established successfully")
+    console.log("Connection established successfully");
 })
     .catch( error =>{
-        console.error('Unable to connect to the database', error)
-    })
+        console.error('Unable to connect to the database', error);
+    });
 
 module.exports = sequelize;

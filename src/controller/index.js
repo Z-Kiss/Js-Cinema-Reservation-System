@@ -1,6 +1,6 @@
-const express = require('express')
-const seatController = require('./seatController')
-const reservationController = require('./reservationController')
+const express = require('express');
+const seatController = require('./seatController');
+const reservationController = require('./reservationController');
 
 const router = express.Router();
 

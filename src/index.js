@@ -1,11 +1,10 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const compression = require('compression')
-const router = require('./controller/index')
-const http = require('http')
-const sequelize = require('./config/databaseConnection')
+const express = require('express');
+const bodyParser = require('body-parser');
+const compression = require('compression');
+const router = require('./controller/index');
+const http = require('http');
+const sequelize = require('./config/databaseConnection');
 const cookieParser = require("cookie-parser");
-const {populateDatabase} = require("~/src/service/seatService");
 const app = express();
 
 app.use(compression());
@@ -14,20 +13,20 @@ app.use(cookieParser());
 
 // // expand express.respond
 app.response.seatsId = [];
-app.response.reservationId = null;
+app.response.email = undefined;
 
 const server = http.createServer(app);
 
 sequelize.sync({force: true}).then(() => {
-    console.log('All models are synchronized successfully')
+    console.log('All models are synchronized successfully');
 }).catch(error => {
-    console.error('Error occurred during model synchronization', error)
+    console.error('Error occurred during model synchronization', error);
 })
 
 
 
 server.listen(8080, () => {
-    console.log('Server running on http://localhost:8080')
+    console.log('Server running on http://localhost:8080');
 })
 
 app.use("/",  router());

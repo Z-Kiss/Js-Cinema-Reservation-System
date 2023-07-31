@@ -1,10 +1,10 @@
-const {makeReservation, payForReservation} = require('../service/reservationService')
-const {validateSeatsId} = require('../midlewares/index')
-const {reserveSeats, changeSeatsStatusToPaid} = require('../service/seatService')
-const sendMail = require('../service/mailService')
+const {makeReservation, payForReservation} = require('../service/reservationService');
+const {validateSeatsId,isAbleToReserve,isAbleToPay, validateEmail} = require('../midlewares/index');
+const sendMail = require('../service/mailService');
+
 const reservationController = (router) =>{
-    router.post('/reservation', )
-    router.patch('/reservation', )
+    router.post('/reservation', validateSeatsId, isAbleToReserve, makeReservation );
+    router.patch('/reservation', isAbleToPay, validateEmail, payForReservation, sendMail );
 }
 
-module.exports = reservationController
+module.exports = reservationController;
