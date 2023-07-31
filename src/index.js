@@ -13,9 +13,7 @@ app.use(cookieParser());
 
 // // expand express.respond
 app.response.seatsId = [];
-app.response.seats = [];
-app.response.name = null;
-app.response.email = null;
+app.response.email = undefined;
 
 const server = http.createServer(app);
 
@@ -31,4 +29,4 @@ server.listen(8080, () => {
     console.log('Server running on http://localhost:8080');
 })
 
-app.use("/", router());
+app.use("/",  router());

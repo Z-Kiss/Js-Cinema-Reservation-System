@@ -1,66 +1,47 @@
-const SeatModel = require('../models/seatModel');
-const ReservationModel = require('../models/reservationModel');
 const {MAXIMUM_AMOUNT_OF_SEAT_THAT_USER_CAN_RESERVE} = process.env;
-
-const checkSeatStatus = async (req, res, next) =>{
+const validateSeatsId = (req, res, next) => {
     const {seatsId} = req.body;
 
-    if(!seatsId ){
-        return res.status(400).send('No seat Id provided');
+    if (!seatsId || seatsId.length === 0) {
+        return res.status(400).send('Chair id not provided');
     }
-    if(seatsId.length > MAXIMUM_AMOUNT_OF_SEAT_THAT_USER_CAN_RESERVE){
-        return res.status(400).send('You only can reserve ' + MAXIMUM_AMOUNT_OF_SEAT_THAT_USER_CAN_RESERVE + ' chars');
+    if (seatsId.length > MAXIMUM_AMOUNT_OF_SEAT_THAT_USER_CAN_RESERVE) {
+        return res.status(400).send('Only 2 chair can be reserved');
     }
-
-    const seats = []
-    for(const seatId of seatsId){
-        let seat = await SeatModel.findByPk(seatId);
-        if(seat === null){
-            return res.status(400).send('Wring Id provided');
-        }
-        if(seat.status !== "szabad"){
-            return res.status(400).send('Seat already reserved');
-        }
-        seats.push(seat);
-    }
-
-    res.seats = seats;
     res.seatsId = seatsId;
     return next();
 }
 
-const checkAuthentication = async (req, res, next) =>{
-    const name = req.cookies['AUTH'];
-    if(!name){
-        return res.status(403).send('Need to login');
-    }
-    res.name = name;
-    return next();
-}
-
-const checkReservationLimit = async(req, res, next) =>{
-    const name = req.cookies['AUTH'];
-    const {seatsId} = req.body;
-    const reservation = await ReservationModel.findAll({where: {name: name}});
-
-    if((reservation.length + seatsId.length) > MAXIMUM_AMOUNT_OF_SEAT_THAT_USER_CAN_RESERVE){
-        return res.status(400).send('You only can reserve ' + MAXIMUM_AMOUNT_OF_SEAT_THAT_USER_CAN_RESERVE + ' chars');
-    }
-    return next();
-}
-
-const checkForEmailAddress = (req, res, next) =>{
+const validateEmail = (req, res, next) => {
     const {email} = req.body;
-    if(!email){
-        return res.status(400).send('need to provide a email address as payment');
+    if (!email) {
+        return res.status(400).send('Email not provided');
     }
     res.email = email;
     return next();
 }
+const isAbleToReserve = (req, res, next) => {
+    const cookie = req.cookies['RESERVATION'];
+    if (cookie){
+        return res.status(400).send('You already have a unpaid reservation');
+    }
+    return next();
+}
 
-module.exports ={
-    checkSeatStatus,
-    checkAuthentication,
-    checkReservationLimit,
-    checkForEmailAddress
+const isAbleToPay = (req, res, next) => {
+    const cookie = req.cookies['RESERVATION'];
+    if (!cookie) {
+        return res.status(400).send("You don't have reservation to pay");
+    }
+    res.seatsId = cookie;
+    return next();
+}
+
+
+module.exports = {
+    validateSeatsId,
+    validateEmail,
+    isAbleToReserve,
+    isAbleToPay,
+
 }

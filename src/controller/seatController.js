@@ -1,9 +1,8 @@
 const {getAllSeat, fillUpDatabaseWithSeats} = require('../service/seatService');
-const {checkAuthentication} = require('../midlewares/index');
-const seatController = (router) =>{
 
+const seatController = (router) =>{
     router.get('/seat', getAllSeat);
-    router.post('/seat',checkAuthentication, fillUpDatabaseWithSeats);
+    router.post('/seat', fillUpDatabaseWithSeats);
 }
 
 module.exports = seatController;

@@ -1,61 +1,82 @@
-const ReservationRepository = require('../models/reservationModel');
-const {freeUpSeats} = require('../service/seatService');
-const {RESERVATION_TIME_LIMIT} = process.env;
-const getAllReservation = async (req, res) =>{
-    const reservations = await ReservationRepository.findAll();
-    return res.status(200).json(reservations);
-}
-
-const payForReservation = async (req, res, next) =>{
-
-    const name = res.name;
-    const reservations = await ReservationRepository.findAll({where: {name: name}});
-    if(!reservations){
-        return res.status(400).send('You dont have reservations, try reserve again');
-    }
-    const seatsId = [];
-    for(const reservation of reservations){
-        let seatId = reservation.seatId;
-        seatsId.push(seatId);
-        reservation.paid = true;
-        await reservation.save();
-    }
-    res.seatsId = seatsId;
-    return next();
-}
-
-const makeReservation = async (req, res) =>{
+const {RESERVATION_TIME_LIMIT} = process.env
+const sequelize = require('../config/databaseConnection');
+const seatRepository = require('../models/seatModel');
+const payForReservation = async (req, res) => {
+    const seatsIds = res.seatsId;
+    const transaction = await sequelize.transaction();
     try{
-        const seatsId = res.seatsId;
-        const name = res.name;
-        for( const seatId of seatsId) {
-            await ReservationRepository.create({name: name, seatId:seatId});
+        for (const seatId of seatsIds) {
+            const seat = await seatRepository.findByPk(seatId);
+            if(seat.status === "foglalt"){
+                seat.status = "elkelt";
+                await seat.save({transaction: transaction});
+            }else{
+                throw new Error("Your reservation was deleted, because of timeout");
+            }
         }
-        scheduleTaskReservationChecking(name, seatsId);
-        return res.status(200).send("Seats reserved, you have 2 minute to pay");
-    }catch(error){
-        console.log(error);
-        return res.sendStatus(500);
+        await transaction.commit();
+    }catch (error){
+        await transaction.rollback();
+        console.log("Transaction failed and rolled back. Reason: ", error);
+    }
+    res.clearCookie('RESERVATION');
+    return res.status(200).send('Reservation paid');
+}
+
+const makeReservation = async (req, res) => {
+    const transaction = await sequelize.transaction();
+    const seatsIds = res.seatsId;
+    try {
+        for (const seatId of seatsIds) {
+            const seat = await seatRepository.findByPk(seatId, {transaction: transaction});
+            if (seat) {
+                if (seat.status === "szabad") {
+                    seat.status = "foglalt";
+                    await seat.save({transaction: transaction});
+                } else {
+                    throw new Error(`Chair with ID ${seatId} already reserved by someone else.`);
+                }
+            } else {
+                throw new Error(`Chair with ID ${seatId} not found.`);
+            }
+        }
+        await transaction.commit();
+    } catch (error) {
+        await transaction.rollback();
+        console.log("Transaction failed and rolled back. Reason: ", error);
+        return res.status(500).send("Transaction failed, Reason: " + error.message);
+    }
+    res.cookie('RESERVATION', seatsIds, {domain: 'localhost', expires: new Date(Date.now() + parseInt(RESERVATION_TIME_LIMIT))});
+    setTimeout(() => cleanUpNotPaidSeats(seatsIds), RESERVATION_TIME_LIMIT);
+
+    console.log('Transaction committed successfully.');
+    return res.status(200).send('Transaction committed successfully.');
+}
+
+const cleanUpNotPaidSeats = async (seatsIds) => {
+    const transaction = await sequelize.transaction();
+    let deleted = false;
+    try {
+        for (const seatId of seatsIds) {
+            const seat = await seatRepository.findByPk(seatId, {transaction: transaction});
+            if (seat.status === "foglalt") {
+                seat.status = "szabad";
+                await seat.save({transaction: transaction});
+                deleted = true;
+            }
+        }
+        await transaction.commit();
+        if(deleted){
+            console.log(`Chair with IDs ${seatsIds} status changed to szabad.`);
+        }
+            console.log(`Cleanup run but nothing changed.`);
+    } catch (error) {
+        await transaction.rollback();
+        console.log("Transaction failed and rolled back. Reason: ", error);
     }
 }
-
-const scheduleTaskReservationChecking = (name, seatsId) =>{
-    setTimeout(() => cleanUpReservations(name, seatsId),RESERVATION_TIME_LIMIT);
-}
-
-const cleanUpReservations = async (name, seatsId) =>{
-    await deleteNotPaidReservations(name);
-    await freeUpSeats(seatsId);
-}
-
-const deleteNotPaidReservations = async (name) =>{
-    await ReservationRepository.destroy({where: {name: name, paid: false}});
-    console.log('Not paid reservations deleted');
-}
-
 
 module.exports = {
-    getAllReservation,
     makeReservation,
     payForReservation
 }
